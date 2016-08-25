@@ -1,13 +1,13 @@
 <template>
   <div id="app" class="main">
       <ul>
-          <li class="joke" v-for="joke in jokeList">
+          <li class="joke" v-for="(joke, index) in jokeList">
               <img class="avatar" :src="joke.avatar" alt="">
               <div class="username">{{joke.user_name}}</div>
               <p>{{ joke.title }}</p>
-              <div class="pic">
+              <div class="pic" :style="{ height: joke.needExpand ? expandHeight +'px' : '100%' }">
                   <img :src="joke.media_data[0].origin_img_url.origin_pic_url" alt="">
-                  <div class="expand" @click="expandImage($index)">点击查看全图</div>
+                  <div class="expand" v-show="joke.needExpand" @click="expandImage(index)">点击查看全图</div>
               </div> 
           </li>  
       </ul>
@@ -22,6 +22,7 @@ Vue.use(vueResource)
 export default {
   data () {
     return {
+      expandHeight: 800,
       jokeList: [],
       maxPos: ''
     }
@@ -38,7 +39,9 @@ export default {
         var json = JSON.parse(response.body)
         var list = json.data 
         for (var i = 0; i < list.length; i++) {
-          this.jokeList.push(list[i])
+          var joke = list[i];
+          joke.needExpand = joke.media_data[0].origin_img_url.resolution.split('x')[1] > this.expandHeight;
+          this.jokeList.push(joke)
         } 
       }, (error) => {
         console.error(error)
@@ -49,7 +52,7 @@ export default {
         this.getData(this.maxPos)
     },
     expandImage(index){
-       this.jokeList[index].media_data[0].wifi_img_url = this.jokeList[index].media_data[0].origin_img_url.origin_pic_url;
+       this.jokeList[index].needExpand = false;
     }
   }
 }
@@ -109,7 +112,6 @@ ul{
 }
 .pic{
     position: relative;
-    /*height: 480px;*/
 }
 .pic>img{
     width: 100%; 
@@ -125,7 +127,6 @@ ul{
     padding: 14px 0;
     color: #fff;
     text-align: center;
-    display: none;
 }
 .btn-more{
     width: 87%;
