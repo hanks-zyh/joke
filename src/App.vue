@@ -13,11 +13,11 @@
             <hot-comment :hot-comment="joke.hot_comment"></hot-comment>
             <div class="divider"></div>
             <joke-info :joke="joke"></joke-info>
+            <comment-list :joke="joke"></comment-list>
           </li>  
         </ul>
         <div v-show="jokeList.length>0" class="btn-more" @click="nextPage">加载更多</div>
       </div>
-    <comment-list :joke="currentJoke" :open="openCommentList" ></comment-list>
   </div>
 </template>
 
@@ -59,6 +59,8 @@ export default {
         var list = json.data 
         for (var i = 0; i < list.length; i++) {
           var joke = list[i]
+          joke.commentList = []
+          joke.showCommentList = false
           joke.needExpand = joke.media_data[0].origin_img_url.resolution.split('x')[1] > this.expandHeight
           this.jokeList.push(joke)
         } 
@@ -75,6 +77,24 @@ export default {
     },
     checkLoadMore(){
       // 检测滑动到底部
+    },
+    showCommentList (joke) { 
+      var url = 'http://bookshelf.leanapp.cn/qiqu?id='+ joke._id
+        this.$http.get(url).then((response) => {
+          var json = JSON.parse(response.body)
+          var list = json.data.comments
+          for (var i = 0; i < list.length; i++) {
+            var comment = list[i]
+            joke.commentList.push(comment)
+          }
+        }, (error) => {
+          console.error(error)
+        })
+      joke.showCommentList = true
+    },
+    hideCommentList (joke) { 
+      joke.commentList.length = 0
+      joke.showCommentList = false
     }
   },
 }

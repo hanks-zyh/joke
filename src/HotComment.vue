@@ -47,7 +47,7 @@ export default {
 .hot-tag{
     display: inline-block;
     border: 1px solid #d07979;
-    padding: 0.1em 0.2em;
+    padding: 0 4px;
     color: #d07979;
 }
 .username{
