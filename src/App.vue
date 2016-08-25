@@ -8,7 +8,10 @@
               <div class="pic" :style="{ height: joke.needExpand ? expandHeight +'px' : '100%' }">
                   <img :src="joke.media_data[0].origin_img_url.origin_pic_url" alt="">
                   <div class="expand" v-show="joke.needExpand" @click="expandImage(index)">点击查看全图</div>
-              </div> 
+              </div>
+              <hot-comment
+                :hot-comment="joke.hot_comment">
+              </hot-comment>
           </li>  
       </ul>
       <div v-show="jokeList.length>0" class="btn-more" @click="nextPage">加载更多</div>
@@ -16,10 +19,16 @@
 </template>
 
 <script>
+import HotComment from './HotComment.vue'
+
 var Vue = require('vue')
 var vueResource = require('vue-resource')
 Vue.use(vueResource)
 export default {
+  components: {
+    HotComment
+  },
+
   data () {
     return {
       expandHeight: 800,
@@ -31,6 +40,7 @@ export default {
     console.log('ready')
     this.maxPos = new Date().getTime()
     this.getData(this.maxPos)
+    this.checkLoadMore()
   },
   methods :{
     getData (maxPos) {
@@ -53,9 +63,15 @@ export default {
     },
     expandImage(index){
        this.jokeList[index].needExpand = false;
+    },
+    checkLoadMore(){
+      // 检测滑动到底部
+
     }
   }
 }
+
+       
 </script>
 
 <style>
@@ -73,6 +89,7 @@ ul{
 .main{
     width: 600px;
     margin: 0 auto;
+    padding-bottom: 40px;
 }
 
 .joke{
@@ -127,17 +144,20 @@ ul{
     padding: 14px 0;
     color: #fff;
     text-align: center;
+    cursor: pointer;
 }
 .btn-more{
     width: 87%;
     display: flex;
-    height: 8em;
+    height: 3em;
     margin: 0 auto;
     background: none;
     border: none;
     font-size: 1em;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
+    transition: background 0.4s;
 }
 
 .btn-more:hover{
