@@ -1,39 +1,48 @@
 <template>
-  <div id="app" class="main">
+  <div id="app">
+    <div class="main">
       <ul>
-          <li class="joke" v-for="(joke, index) in jokeList">
-              <img class="avatar" :src="joke.avatar" alt="">
-              <div class="username">{{joke.user_name}}</div>
-              <p>{{ joke.title }}</p>
-              <div class="pic" :style="{ height: joke.needExpand ? expandHeight +'px' : '100%' }">
-                  <img :src="joke.media_data[0].origin_img_url.origin_pic_url" alt="">
-                  <div class="expand" v-show="joke.needExpand" @click="expandImage(index)">点击查看全图</div>
-              </div>
-              <hot-comment
-                :hot-comment="joke.hot_comment">
-              </hot-comment>
+        <li class="joke" v-for="(joke, index) in jokeList">
+            <img class="avatar" :src="joke.avatar" alt="">
+            <div class="username">{{joke.user_name}}</div>
+            <p>{{ joke.title }}</p>
+            <div class="pic" :style="{ height: joke.needExpand ? expandHeight +'px' : '100%' }">
+                <img :src="joke.media_data[0].origin_img_url.origin_pic_url" alt="">
+                <div class="expand" v-show="joke.needExpand" @click="expandImage(index)">点击查看全图</div>
+            </div>
+            <hot-comment :hot-comment="joke.hot_comment"></hot-comment>
+            <div class="divider"></div>
+            <joke-info :joke="joke"></joke-info>
           </li>  
-      </ul>
-      <div v-show="jokeList.length>0" class="btn-more" @click="nextPage">加载更多</div>
+        </ul>
+        <div v-show="jokeList.length>0" class="btn-more" @click="nextPage">加载更多</div>
+      </div>
+    <comment-list :joke="currentJoke" :open="openCommentList" ></comment-list>
   </div>
 </template>
 
 <script>
 import HotComment from './HotComment.vue'
+import JokeInfo from './JokeInfo.vue'
+import CommentList from './CommentList.vue'
 
 var Vue = require('vue')
 var vueResource = require('vue-resource')
 Vue.use(vueResource)
 export default {
   components: {
-    HotComment
+    HotComment,
+    JokeInfo,
+    CommentList
   },
 
   data () {
     return {
       expandHeight: 800,
       jokeList: [],
-      maxPos: ''
+      maxPos: '',
+      openCommentList: false,
+      currentJoke: {}
     }
   },
   created () {
@@ -49,8 +58,8 @@ export default {
         var json = JSON.parse(response.body)
         var list = json.data 
         for (var i = 0; i < list.length; i++) {
-          var joke = list[i];
-          joke.needExpand = joke.media_data[0].origin_img_url.resolution.split('x')[1] > this.expandHeight;
+          var joke = list[i]
+          joke.needExpand = joke.media_data[0].origin_img_url.resolution.split('x')[1] > this.expandHeight
           this.jokeList.push(joke)
         } 
       }, (error) => {
@@ -62,16 +71,24 @@ export default {
         this.getData(this.maxPos)
     },
     expandImage(index){
-       this.jokeList[index].needExpand = false;
+       this.jokeList[index].needExpand = false
     },
     checkLoadMore(){
       // 检测滑动到底部
+    }
+  },
 
+  events: {
+    'showCommentList': function (joke) {
+      console.log("click:"+this.joke)
+      this.currentJoke = joke
+      this.openCommentList = true
+    },
+    'hideCommentList': function () {
+      this.openCommentList = false
     }
   }
 }
-
-       
 </script>
 
 <style>
@@ -85,6 +102,56 @@ body {
 }
 ul{
     list-style: none;
+}
+.overlay {
+    height: 0%;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.9);
+    overflow-y: hidden;
+    transition: 0.5s;
+}
+
+.overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+}
+
+.overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay {overflow-y: auto;}
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+  }
 }
 .main{
     width: 600px;
@@ -129,9 +196,13 @@ ul{
 }
 .pic{
     position: relative;
+    overflow: hidden;
 }
 .pic>img{
     width: 100%; 
+}
+.divider{
+  border-bottom: 1px solid #e1e1e1;
 }
 .expand{
     position: absolute;
