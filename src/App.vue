@@ -22,13 +22,13 @@
 </template>
 
 <script>
-import HotComment from './HotComment.vue'
-import JokeInfo from './JokeInfo.vue'
-import CommentList from './CommentList.vue'
+import HotComment from './HotComment.vue';
+import JokeInfo from './JokeInfo.vue';
+import CommentList from './CommentList.vue';
 
-var Vue = require('vue')
-var vueResource = require('vue-resource')
-Vue.use(vueResource)
+var Vue = require('vue');
+var vueResource = require('vue-resource');
+Vue.use(vueResource);
 export default {
   components: {
     HotComment,
@@ -46,55 +46,54 @@ export default {
     }
   },
   created () {
-    console.log('ready')
-    this.maxPos = new Date().getTime()
-    this.getData(this.maxPos)
-    this.checkLoadMore()
+    this.maxPos = new Date().getTime();
+    this.getData(this.maxPos);
+    this.checkLoadMore();
   },
   methods :{
     getData (maxPos) {
       var url = 'http://napi.uc.cn/3/classes/topic/lists/%E9%A6%96%E9%A1%B5%E7%B2%BE%E9%80%89%E5%88%97%E8%A1%A8?_app_id=hottopic&_size=10&_fetch=1&_fetch_incrs=1&_max_pos='+maxPos+'&_fetch_total=1&_select=like_start%2Cdislike_start%2Ctitle%2Ctag%2Cmedia_data%2Clist_info%2Ccontent%2Cavatar%2Cuser_name%2Cis_hot%2Chot_comment%2Ccomment_total%2Coriginal%2Ctv_duration';
       this.$http.get(url).then((response) => {
-        var json = JSON.parse(response.body)
-        var list = json.data 
+        var json = JSON.parse(response.body);
+        var list = json.data ;
         for (var i = 0; i < list.length; i++) {
-          var joke = list[i]
-          joke.commentList = []
-          joke.showCommentList = false
-          joke.needExpand = joke.media_data[0].origin_img_url.resolution.split('x')[1] > this.expandHeight
-          this.jokeList.push(joke)
+          var joke = list[i];
+          joke.commentList = [];
+          joke.showCommentList = false;
+          joke.needExpand = joke.media_data[0].origin_img_url.resolution.split('x')[1] > this.expandHeight;
+          this.jokeList.push(joke);
         } 
       }, (error) => {
-        console.error(error)
+        console.error(error);
       })
     },
     nextPage () {
-        this.maxPos = this.jokeList[this.jokeList.length-1]._pos
-        this.getData(this.maxPos)
+        this.maxPos = this.jokeList[this.jokeList.length-1]._pos;
+        this.getData(this.maxPos);
     },
     expandImage(index){
-       this.jokeList[index].needExpand = false
+       this.jokeList[index].needExpand = false;
     },
     checkLoadMore(){
       // 检测滑动到底部
     },
     showCommentList (joke) { 
-      var url = 'http://bookshelf.leanapp.cn/qiqu?id='+ joke._id
+      var url = 'http://bookshelf.leanapp.cn/qiqu?id='+ joke._id;
         this.$http.get(url).then((response) => {
-          var json = JSON.parse(response.body)
-          var list = json.data.comments
+          var json = JSON.parse(response.body);
+          var list = json.data.comments;
           for (var i = 0; i < list.length; i++) {
-            var comment = list[i]
-            joke.commentList.push(comment)
+            var comment = list[i];
+            joke.commentList.push(comment);
           }
         }, (error) => {
-          console.error(error)
+          console.error(error);
         })
-      joke.showCommentList = true
+      joke.showCommentList = true;
     },
     hideCommentList (joke) { 
-      joke.commentList.length = 0
-      joke.showCommentList = false
+      joke.commentList.length = 0;
+      joke.showCommentList = false;
     }
   },
 }

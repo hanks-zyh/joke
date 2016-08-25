@@ -51,7 +51,7 @@ export default {
     color: #8a9076;
 }
 .username{
-    display: inline;
+    display: inline-block;
     margin: 1em 0;
     font-size: 1em; 
     color: #888;

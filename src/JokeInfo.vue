@@ -23,9 +23,9 @@ export default {
   methods: {
     toggleCommentList () {
       if(this.joke.showCommentList){
-        this.$parent.hideCommentList(this.joke)
+        this.$parent.hideCommentList(this.joke);
       }else{
-        this.$parent.showCommentList(this.joke)
+        this.$parent.showCommentList(this.joke);
       }
     }
   },

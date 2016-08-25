@@ -4,17 +4,6 @@
       <p>{{ hotComment.message }}</p>
   </div>
 </template>
-<!-- 
-"author": "氵炎╰_╯宀莫"
-"message": "建国以后动物不许成精，不许成精说了多少次了"
-"like": 93
-"dislike": 0
-"_id": "39080426"
-"extra": {
-"avatar": "http://image.uc.cn/o/uop/1Ht08/;;0,uop/g/uop/avatar/16070208317cbea030ab48958ed742cdd88909552c.jpg;3,160"
-"post_title": "别过来。有陷阱。"
-"post_type": "detail"
--->
 <script> 
 export default {
 
@@ -51,7 +40,7 @@ export default {
     color: #d07979;
 }
 .username{
-    display: inline;
+    display: inline-block;
     margin: 1em 0;
     font-size: 1em; 
     color: #888;

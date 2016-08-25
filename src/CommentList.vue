@@ -10,12 +10,7 @@
     </ul>
   </div>
 </template>
-<script> 
-
-var Vue = require('vue')
-var vueResource = require('vue-resource')
-Vue.use(vueResource)
-
+<script>  
 export default {
 
   name: 'CommentList',
