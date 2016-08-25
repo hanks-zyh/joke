@@ -1,6 +1,6 @@
 <template>
   <div v-if="show" class="hot-comment">
-      <div class="hot-tag">神评论</div><div class="username">  {{ hotComment.author }}</div>
+      <div class="hot-tag">神评论</div><div class="co-username">  {{ hotComment.author }}</div>
       <p>{{ hotComment.message }}</p>
   </div>
 </template>
@@ -50,8 +50,8 @@ export default {
     padding: 0.1em 0.2em;
     color: #8a9076;
 }
-.username{
-    display: inline-block;
+.co-username{
+    display: inline;
     margin: 1em 0;
     font-size: 1em; 
     color: #888;
