@@ -45,10 +45,10 @@ export default {
     font-size: 13px;
 }
 .hot-tag{
-    isplay: inline-block;
+    display: inline-block;
     border: 1px solid #d07979;
     padding: 0.1em 0.2em;
-    color: #8a9076;
+    color: #d07979;
 }
 .username{
     display: inline;

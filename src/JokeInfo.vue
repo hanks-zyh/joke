@@ -22,8 +22,17 @@ export default {
   },
   methods: {
     showCommentList () {
+      this.$parent.currentJoke = this.joke
+      this.$parent.openCommentList = true
+    }
+  },
+
+  events: {
+    'showCommentList': function (joke) {
       console.log("click:"+this.joke)
-      this.$dispatch('showCommentList', this.joke)
+       
+    },
+    'hideCommentList': function () {
     }
   }
 }

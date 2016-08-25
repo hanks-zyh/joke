@@ -1,33 +1,57 @@
 <template>
-  <div id="myNav" class="overlay" :style="{ height: open ? '100%' : '0%' }">
+  <div class="overlay" :style="{ height: open ? '100%' : '0%' }">
     <a href="#" class="closebtn" @click="closeNav">&times;</a>
     <div class="overlay-content">
-      <a href="#">About</a>
-      <a href="#">Services</a>
-      <a href="#">Clients</a>
-      <a href="#">Contact</a>
+       <ul>
+         <li v-for="(comment, index) in cList">
+           <div class="comment-item">
+             <h2>{{comment.author}}</h2>
+             <p>{{comment.message}}</p>
+           </div>
+         </li>
+       </ul>
     </div>
   </div>
 </template>
 <script> 
+
+var Vue = require('vue')
+var vueResource = require('vue-resource')
+Vue.use(vueResource)
+
 export default {
 
   name: 'CommentList',
 
   props:{
-    joke: Object
+    joke: Object,
+    open: Boolean
   },
 
   data () {
     return {
-      open: false
+      cList: [],
     }
   },
   created () {
+    this.getData()
   },
   methods: {
     closeNav () {
-        this.$dispatch('hideCommentList')
+        this.$parent.openCommentList = false
+    },
+    getData(){ 
+      var url = 'http://bookshelf.leanapp.cn/qiqu?id='+ this.joke._id
+      this.$http.get(url).then((response) => {
+        var json = JSON.parse(response.body)
+        var list = json.data.comments
+        for (var i = 0; i < list.length; i++) {
+          var comment = list[i]
+          this.cList.push(comment)
+        } 
+      }, (error) => {
+        console.error(error)
+      })
     }
   }
 }
@@ -41,6 +65,7 @@ export default {
     z-index: 1;
     top: 0;
     left: 0;
+    color: white;
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0, 0.9);
     overflow-y: hidden;
@@ -84,4 +109,24 @@ export default {
     right: 35px;
   }
 }
+
+.comment-item{
+  width: 600px;
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  border-bottom: 1px dashed #888888;
+  margin-bottom: 1em;
+}
+.comment-item>h2{
+  color: #888888;
+  font-size: 1em;
+}
+.comment-item>p{
+  font-size: 1.2em;
+  line-height: 1.2em;
+  margin: 1em 0em;
+}
+
 </style>
