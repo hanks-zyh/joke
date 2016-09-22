@@ -11,7 +11,6 @@
             <div class="expand" v-show="joke.needExpand" @click="expandImage(index)">点击查看全图</div>
           </div>
           <hot-comment :hot-comment="joke.hot_comment"></hot-comment>
-          <div class="divider"></div>
           <joke-info :joke="joke"></joke-info>
           <comment-list :joke="joke"></comment-list>
         </li>
@@ -103,6 +102,8 @@ export default {
   * {
     padding: 0;
     margin: 0;
+    -webkit-user-select: none;/*禁用手机浏览器的用户选择功能 */
+    -moz-user-select: none;
   }
 
   html{

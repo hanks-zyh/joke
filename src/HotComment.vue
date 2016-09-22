@@ -4,7 +4,7 @@
       <p>{{ hotComment.message }}</p>
   </div>
 </template>
-<script> 
+<script>
 export default {
 
   name: 'HotComment',
@@ -27,8 +27,8 @@ export default {
 <style>
 .hot-comment {
     background-color: #eaeaea;
-    margin: 10px 6px;
-    padding: 6px 10px 13px;
+    margin: 1rem;
+    padding: 0.6rem;
     border-radius: 3px;
     line-height: 20px;
     font-size: 13px;
@@ -42,13 +42,13 @@ export default {
 .hot-username{
     display: inline;
     margin: 1em 0;
-    font-size: 1em; 
+    font-size: 1em;
     color: #888;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .hot-comment>p{
-  font-size: 1.1em;
-} 
+  margin-top: 0.4rem;
+}
 </style>
