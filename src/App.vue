@@ -59,7 +59,7 @@ export default {
           var joke = list[i];
           joke.commentList = [];
           joke.showCommentList = false;
-          joke.needExpand = joke.media_data[0].origin_img_url.resolution.split('x')[1] > this.expandHeight;
+          joke.needExpand = joke.media_data[0].is_origin == 0;
           this.jokeList.push(joke);
         }
       }, (error) => {
