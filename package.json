@@ -8,6 +8,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "material-design-lite": "^1.2.0",
     "vue": "^2.0.0-beta.5",
     "vue-resource": "^0.9.3"
   },
