@@ -81,7 +81,7 @@ export default {
     },
     clickImg(index){
        var url = this.jokeList[index].origin_img_url;
-       var json = JSON.stringify({currentIndex:index,uris:[url]});
+       var json = JSON.stringify({uris:[url]});
        var openUrl = 'hydrogen://pub.hydrogen.android?action=open_img&data='+json;
        var ifr = document.createElement('iframe');
        console.log(openUrl)
