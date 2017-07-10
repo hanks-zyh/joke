@@ -7,7 +7,7 @@
           <div class="username">{{joke.user_name}}</div>
           <p>{{ joke.title }}</p>
           <div class="pic" :style="{ height: joke.needExpand ? expandHeight +'px' : '100%' }">
-            <img :src="joke.media_data[0].origin_img_url.origin_pic_url" alt="">
+            <img :src="joke.origin_img_url" @click="clickImg(index)" alt="">
             <div class="expand" v-show="joke.needExpand" @click="expandImage(index)">点击查看全图</div>
           </div>
           <hot-comment :hot-comment="joke.hot_comment"></hot-comment>
@@ -59,7 +59,13 @@ export default {
           var joke = list[i];
           joke.commentList = [];
           joke.showCommentList = false;
-          joke.needExpand = joke.media_data[0].is_origin == 0;
+          try{
+            joke.needExpand = joke.media_data[0].is_origin == 0;
+            joke.origin_img_url = joke.media_data[0].origin_img_url.origin_pic_url;
+          }catch(e){
+            joke.origin_img_url = "";
+            joke.needExpand = false;
+          }
           this.jokeList.push(joke);
         }
       }, (error) => {
@@ -72,6 +78,19 @@ export default {
     },
     expandImage(index){
        this.jokeList[index].needExpand = false;
+    },
+    clickImg(index){
+       var url = this.jokeList[index].origin_img_url;
+       var json = JSON.stringify({currentIndex:index,uris:[url]});
+       var openUrl = 'hydrogen://pub.hydrogen.android?action=open_img&data='+json;
+       var ifr = document.createElement('iframe');
+       console.log(openUrl)
+       ifr.src = openUrl;
+       ifr.style.display = 'none';
+       document.body.appendChild(ifr);
+       setTimeout(function() {
+          document.body.removeChild(ifr);
+       }, 2000);
     },
     checkLoadMore(){
       // 检测滑动到底部
@@ -195,7 +214,7 @@ export default {
   }
 
   .btn-more {
-    width: 87%;
+    width: 94%;
     display: flex;
     height: 3em;
     margin: 0 auto;
