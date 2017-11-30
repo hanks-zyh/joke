@@ -59,8 +59,12 @@ export default {
           var joke = list[i];
           joke.commentList = [];
           joke.showCommentList = false;
+          if (!joke.title) {
+            joke.title = joke.content;
+          }
           try{
-            joke.needExpand = joke.media_data[0].is_origin == 0;
+            var size = joke.media_data[0].origin_img_url.resolution
+            joke.needExpand = size.substr(size.indexOf('x') + 1) > 900
             joke.origin_img_url = joke.media_data[0].origin_img_url.origin_pic_url;
           }catch(e){
             joke.origin_img_url = "";
