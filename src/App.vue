@@ -40,11 +40,13 @@ export default {
       expandHeight: 800,
       jokeList: [],
       maxPos: '',
+      urlSet: undefined,
       openCommentList: false,
       currentJoke: {}
     }
   },
   created () {
+    this.urlSet = new Set();
     this.maxPos = new Date().getTime();
     this.getData(this.maxPos);
     this.checkLoadMore();
@@ -52,6 +54,7 @@ export default {
   methods :{
     getData (maxPos) {
       var url = 'http://napi.uc.cn/3/classes/topic/lists/%E9%A6%96%E9%A1%B5%E7%B2%BE%E9%80%89%E5%88%97%E8%A1%A8?_app_id=hottopic&_size=10&_fetch=1&_fetch_incrs=1&_max_pos='+maxPos+'&_fetch_total=1&_select=like_start%2Cdislike_start%2Ctitle%2Ctag%2Cmedia_data%2Clist_info%2Ccontent%2Cavatar%2Cuser_name%2Cis_hot%2Chot_comment%2Ccomment_total%2Coriginal%2Ctv_duration';
+      
       this.$http.get(url).then((response) => {
         var json = JSON.parse(response.body);
         var list = json.data ;
@@ -63,14 +66,20 @@ export default {
             joke.title = joke.content;
           }
           try{
-            var size = joke.media_data[0].origin_img_url.resolution
+            var imgs = JSON.parse(joke.media_data) 
+            var size = imgs[0].origin_img_url.resolution
             joke.needExpand = size.substr(size.indexOf('x') + 1) > 900
-            joke.origin_img_url = joke.media_data[0].origin_img_url.origin_pic_url;
+            joke.origin_img_url = imgs[0].origin_img_url.origin_pic_url;
           }catch(e){
             joke.origin_img_url = "";
             joke.needExpand = false;
           }
-          this.jokeList.push(joke);
+          if (joke.origin_img_url == ""){
+              this.jokeList.push(joke);
+          }else if(!this.urlSet.has(joke.origin_img_url) ){
+            this.urlSet.add(joke.origin_img_url);
+            this.jokeList.push(joke);
+          }
         }
       }, (error) => {
         console.error(error);
